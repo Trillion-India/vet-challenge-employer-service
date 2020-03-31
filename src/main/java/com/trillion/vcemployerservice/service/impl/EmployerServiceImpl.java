@@ -47,8 +47,8 @@ public class EmployerServiceImpl implements EmployerService {
 
 	private String buildSamApiRequestUrl(String businessName) {
 		StringBuilder samApiRequestBuilder = new StringBuilder();
-		samApiRequestBuilder.append(samApiUrl).append("(legalBusinessName:").append(businessName.replaceAll(" ", "+"))
-				.append(")+AND+(registrationStatus:A)&start=1&length=25").append("&api_key=").append(samApiKey);
+		samApiRequestBuilder.append(samApiUrl).append("legalBusinessName:(").append(businessName.replaceAll(" ", ",+"))
+				.append(")+AND+registrationStatus:A&start=1&length=25").append("&api_key=").append(samApiKey);
 		logger.info(samApiRequestBuilder.toString());
 		return samApiRequestBuilder.toString();
 	}
