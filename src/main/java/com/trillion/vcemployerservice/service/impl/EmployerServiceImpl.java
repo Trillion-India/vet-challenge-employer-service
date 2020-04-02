@@ -1,7 +1,12 @@
 package com.trillion.vcemployerservice.service.impl;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +20,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.trillion.vcemployerservice.dto.Job;
 import com.trillion.vcemployerservice.dto.SamBusiness;
 import com.trillion.vcemployerservice.exception.VetChallengeServiceException;
 import com.trillion.vcemployerservice.service.EmployerService;
@@ -81,4 +87,78 @@ public class EmployerServiceImpl implements EmployerService {
 		
 		return samBusinesses;
 	}
+
+	@Override
+	public List<Job> getJobsPosted(Long employerId) {
+		int jobsCount = getRandomInteger(50, 1);
+		List<Job> jobs = new ArrayList<>();
+		for (int i = 0; i < jobsCount; i++ ) {
+			Job job = new Job();
+			job.setJobId(i + 1000L);
+			job.setEmployerImage("https://react.semantic-ui.com/images/avatar/large/steve.jpg");
+			Long jobRoleId = Long.valueOf(getRandomInteger(5, 1));
+			job.setJobRoleId(jobRoleId);
+			job.setJobRole(getJobRole(jobRoleId));
+			job.setEmployerName("Leidos");
+			job.setLocation(getRandomLocation());
+			job.setViewsCount(getRandomInteger(1000, 1));
+			job.setApplicantsCount(getRandomInteger(100, 1));
+			Calendar cal = Calendar.getInstance();
+			job.setJobPosted(datesBetween(getMinimumDate(), new Date()));
+			jobs.add(job);
+		}
+		return jobs;
+	}
+	
+	private Date getMinimumDate() {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, -30);
+		Date dateBefore30Days = cal.getTime();
+		return dateBefore30Days;
+	}
+	
+	private String getRandomLocation() {
+		String[] locations = {"Washington D.C", "New York", "New Jersey", "Hyderabad", "Banglore", "Deleware"};
+		int rnd = new Random().nextInt(locations.length);
+	    return locations[rnd];
+	}
+	
+	public static Date datesBetween(Date startInclusive, Date endExclusive) {
+	    long startMillis = startInclusive.getTime();
+	    long endMillis = endExclusive.getTime();
+	    long randomMillisSinceEpoch = ThreadLocalRandom
+	      .current()
+	      .nextLong(startMillis, endMillis);
+	 
+	    return new Date(randomMillisSinceEpoch);
+	}
+	
+	private String getJobRole(Long jobRoleId) {
+		if (jobRoleId == 1) {
+			return "Software Engineer";
+		} else if (jobRoleId == 2) {
+			return "Associate";
+		} else if (jobRoleId == 3) {
+			return "Junior Associate";
+		} else if (jobRoleId == 4) {
+			return "Senior Software Engineer";
+		} else if (jobRoleId == 5) {
+			return "Associate Manager";
+		} else if (jobRoleId == 6) {
+			return "Team Lead";
+		} else if (jobRoleId == 7) {
+			return "Solution Architect";
+		} else if (jobRoleId == 8) {
+			return "Project Manager";
+		} else {
+			return "";
+		}
+	}
+	
+	public static Integer getRandomInteger(int maximum, int minimum){ 
+		return ((int) (Math.random()*(maximum - minimum))) + minimum; 
+	}
+
+	
+	
 }
